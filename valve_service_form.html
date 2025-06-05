@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Valve Service Frequency Advisor</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .question {
+      margin-bottom: 15px;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>Control Valve Service Frequency Advisor</h1>
+  <form id="serviceForm">
+    <div class="question">
+      <label>1. Operation Intensity (1 = Rare, 5 = Continuous):</label><br />
+      <input type="number" name="operation" min="1" max="5" required />
+    </div>
+    <div class="question">
+      <label>2. Service Conditions (1 = Clean water, 5 = Harsh/sewerage):</label><br />
+      <input type="number" name="conditions" min="1" max="5" required />
+    </div>
+    <div class="question">
+      <label>3. Valve Size (1 = Small, 5 = Very Large):</label><br />
+      <input type="number" name="size" min="1" max="5" required />
+    </div>
+    <div class="question">
+      <label>4. Valve Importance (1 = Backup, 5 = Critical):</label><br />
+      <input type="number" name="importance" min="1" max="5" required />
+    </div>
+    <div class="question">
+      <label>5. Valve Age (1 = New, 5 = Over 20 years):</label><br />
+      <input type="number" name="age" min="1" max="5" required />
+    </div>
+    <button type="submit">Submit</button>
+  </form>
+
+  <div id="output" class="result"></div>
+
+  <script>
+    document.getElementById("serviceForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const scores = ["operation", "conditions", "size", "importance", "age"].map(field => parseInt(form[field].value));
+      const total = scores.reduce((a, b) => a + b, 0);
+      let risk = "";
+      let message = "";
+
+      if (total >= 20) {
+        risk = "High Risk (Red)";
+        message = "Immediate and regular inspections recommended. Valve likely under severe conditions.";
+      } else if (total >= 15) {
+        risk = "Medium to High Risk (Orange)";
+        message = "Monitor closely and service frequently.";
+      } else if (total >= 10) {
+        risk = "Medium Risk (Yellow)";
+        message = "Service as per standard maintenance schedule.";
+      } else {
+        risk = "Low Risk (Green)";
+        message = "Periodic checks sufficient. Valve in good conditions.";
+      }
+
+      document.getElementById("output").innerHTML =
+        `<h3>Result</h3><p><strong>Total Score:</strong> ${total}</p><p><strong>Risk Level:</strong> ${risk}</p><p>${message}</p>`;
+    });
+  </script>
+</body>
+</html>
